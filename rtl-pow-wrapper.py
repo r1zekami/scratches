@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-args = ["-f", "24M:1700M:100k", "-g", "25", "-i", "10", "-1" "output.csv"]
+args = ["-f", "24M:1700M:100k", "-g", "25", "-i", "10", "-1", "output.csv"]
 command = ["rtl_power"] + args
 
 def parse_csv_no_header(input_file, output_file):

@@ -1,7 +1,14 @@
 import subprocess
 import os
+import datetime
 
-args = ["-f", "24M:1700M:100k", "-g", "25", "-i", "10", "-1", "output.csv"]
+now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+log_filename = f"output_{now}.csv"
+parsed_filename = f"output_{now}.parsed.csv"
+logs_dir = "rtl-sdr-logs"
+parsed_path = os.path.join(logs_dir, parsed_filename)
+
+args = ["-f", "24M:1700M:100k", "-g", "25", "-i", "10", "-1", log_filename]
 command = ["rtl_power"] + args
 
 def parse_csv_no_header(input_file, output_file):
@@ -31,9 +38,6 @@ def parse_csv_no_header(input_file, output_file):
             file.write(data_line + '\n')
 
 try:
-    logs_dir = "rtl-sdr-logs"
-    parsed_filename = "output.parsed.csv"
-    parsed_path = os.path.join(logs_dir, parsed_filename)
     if not os.path.exists(logs_dir):
         try:
             os.makedirs(logs_dir)
@@ -46,11 +50,11 @@ try:
             print(line, end='')
     process.wait()
     print(f"rtl_power  {process.returncode}")
-    parse_csv_no_header("output.csv", parsed_path)
+    parse_csv_no_header(log_filename, parsed_path)
     try:
-        os.remove("output.csv")
+        os.remove(log_filename)
     except Exception as e:
-        print(f"Something went wrong while removing output.csv: {e}")
+        print(f"Something went wrong while removing {log_filename}: {e}")
     
 except Exception as e:
     print(f"Error: {e}")
